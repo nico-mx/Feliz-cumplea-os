@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Feliz Cumpleaños! - Edición Especial</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Great+Vibes&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        theme: {
+                            night: '#080d1a',
+                            nightlight: '#121d33',
+                            emerald: '#112e24',
+                            rose: '#e63946',
+                            scarlet: '#9e1b32',
+                            softpink: '#f4acb7',
+                            parchment: '#fdf8ec',
+                            goldaccent: '#d4af37'
+                        }
+                    },
+                    fontFamily: {
+                        epic: ['Cinzel', 'serif'],
+                        romantic: ['Great Vibes', 'cursive'],
+                        sans: ['Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #050914 0%, #0b1325 50%, #121c30 100%);
+            color: #fdf8ec;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Tarjeta de estilo cristal nocturno */
+        .glass-card {
+            background: rgba(18, 29, 51, 0.82);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(244, 172, 183, 0.22);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .scarlet-glow {
+            box-shadow: 0 0 25px rgba(230, 57, 70, 0.4);
+        }
+
+        /* Estilo Pergamino para la Carta */
+        /* Estilo Terciopelo Vino en Contraste con el Fondo Nocturno */
+        .bg-romantic-letter {
+            background: linear-gradient(145deg, #2d0c18 0%, #471225 50%, #240914 100%);
+            background-image: radial-gradient(rgba(244, 172, 183, 0.12) 1px, transparent 1px), linear-gradient(145deg, #2d0c18 0%, #471225 50%, #240914 100%);
+            background-size: 24px 24px, 100% 100%;
+            color: #fdf8ec;
+        }
+
+        /* Flip card efect */
+        .flip-card { perspective: 1000px; }
+        .flip-card-inner { transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { backface-visibility: hidden; }
+        .flip-card-back { transform: rotateY(180deg); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0b1325; }
+        ::-webkit-scrollbar-thumb { background: #9e1b32; border-radius: 4px; }
+
+        /* Transición suave entre secciones */
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen pb-24">
+
+    <!-- Canvas para Pétalos de Rosa, Luces y Destellos -->
+    <canvas id="fxCanvas" class="fixed inset-0 pointer-events-none z-50 w-full h-full"></canvas>
+
+    <!-- INTRO OVERLAY (APERTURA SORPRESA) -->
+    <div id="introOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-theme-night/95 backdrop-blur-xl p-4 transition-all duration-700">
+        <div class="max-w-md w-full text-center space-y-6 glass-card p-8 rounded-3xl border-2 border-theme-rose/40 scarlet-glow relative overflow-hidden">
+
+            <!-- Icono Corazón Brillante -->
+            <div class="relative w-28 h-28 mx-auto cursor-pointer animate-bounce flex items-center justify-center bg-gradient-to-br from-theme-scarlet to-theme-rose rounded-full shadow-[0_0_25px_rgba(230,57,70,0.8)] border-2 border-theme-softpink/50" onclick="triggerIntroSurprise()">
+                <i class="fas fa-heart text-white text-5xl"></i>
+            </div>
+
+            <div class="space-y-2">
+                <span class="text-theme-softpink font-romantic text-3xl block">Un Detalle Para Ti</span>
+                <h1 class="text-3xl font-epic font-black text-transparent bg-clip-text bg-gradient-to-r from-red-200 via-theme-softpink to-theme-rose">
+                    ¡Feliz Cumpleaños #22!
+                </h1>
+                <p class="text-gray-300 text-xs leading-relaxed">
+                    He preparado algo muy especial para celebrar tu día. Presiona el botón de abajo para comenzar la sorpresa.
+                </p>
+            </div>
+
+            <button onclick="triggerIntroSurprise()" class="w-full bg-gradient-to-r from-theme-scarlet via-theme-rose to-theme-scarlet text-white py-4 rounded-full font-epic font-bold text-sm tracking-widest shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 border border-theme-softpink/40">
+                <i class="fas fa-gift text-theme-softpink"></i>
+                <span>ABRIR MI SORPRESA</span>
+                <i class="fas fa-sparkles text-theme-softpink"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- HEADER / NAVEGACIÓN PRINCIPAL -->
+    <header class="sticky top-0 z-40 bg-theme-night/90 backdrop-blur-md border-b border-theme-rose/30 px-4 py-3 shadow-xl">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
+
+            <div class="flex items-center gap-3 w-full md:w-auto justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-heart text-theme-rose text-lg animate-pulse"></i>
+                    <span class="font-epic text-theme-softpink text-xs md:text-sm font-semibold tracking-wider">Feliz Cumpleaños • Edición Especial</span>
+                </div>
+                <button id="audioToggle" onclick="toggleAudio()" class="bg-theme-scarlet/30 hover:bg-theme-scarlet text-theme-softpink px-3 py-1 rounded-full border border-theme-rose/40 transition text-xs flex items-center gap-2">
+                    <i class="fas fa-music" id="audioIcon"></i>
+                    <span id="audioText">Audio: ON</span>
+                </button>
+            </div>
+
+            <!-- MENÚ DE NAVEGACIÓN DE SECCIONES (TABS) -->
+            <nav class="flex items-center justify-center gap-1 md:gap-2 bg-theme-nightlight/90 p-1.5 rounded-full border border-theme-rose/20 w-full md:w-auto overflow-x-auto text-xs">
+                <button onclick="switchTab('carta')" id="tab-carta" class="tab-btn active px-3 py-1.5 rounded-full font-semibold transition text-theme-softpink bg-theme-scarlet/60 whitespace-nowrap">
+                    <i class="fas fa-envelope-open-text mr-1"></i> I. Carta
+                </button>
+                <button onclick="switchTab('memorias')" id="tab-memorias" class="tab-btn px-3 py-1.5 rounded-full font-semibold transition text-gray-300 hover:text-theme-softpink whitespace-nowrap">
+                    <i class="fas fa-star mr-1"></i> II. Momentos
+                </button>
+                <button onclick="switchTab('razones22')" id="tab-razones22" class="tab-btn px-3 py-1.5 rounded-full font-semibold transition text-gray-300 hover:text-theme-softpink whitespace-nowrap">
+                    <i class="fas fa-heart mr-1"></i> III. 22 Razones
+                </button>
+                <button onclick="switchTab('pastel')" id="tab-pastel" class="tab-btn px-3 py-1.5 rounded-full font-semibold transition text-gray-300 hover:text-theme-softpink whitespace-nowrap">
+                    <i class="fas fa-birthday-cake mr-1"></i> IV. Pastel
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 pt-6 relative z-10">
+
+        <!-- ==================== SECCIÓN 1: CARTA SECRETA ==================== -->
+        <section id="sec-carta" class="tab-content active space-y-6">
+            <div class="text-center pt-2">
+                <span class="text-theme-softpink text-xs font-semibold tracking-widest uppercase bg-theme-scarlet/30 px-3 py-1 rounded-full border border-theme-rose/30">Capítulo I</span>
+                <h2 class="font-epic text-3xl md:text-5xl font-extrabold text-theme-softpink mt-2">Una Carta Para Ti</h2>
+                <p class="text-gray-300 text-xs md:text-sm max-w-lg mx-auto">Un mensaje sincero para celebrar tu vida y todo lo bonito que eres.</p>
+            </div>
+
+            <div class="bg-romantic-letter p-6 md:p-10 rounded-2xl shadow-2xl scarlet-glow relative text-theme-parchment border-2 border-theme-rose/50">
+                <div class="absolute -top-5 right-6 w-14 h-14 bg-gradient-to-br from-theme-rose to-theme-scarlet rounded-full border-2 border-theme-softpink/60 flex items-center justify-center shadow-lg transform rotate-6">
+                    <i class="fas fa-heart text-white text-xl"></i>
+                </div>
+
+                <div class="border-b border-theme-softpink/25 pb-3 mb-5">
+                    <span class="font-epic text-xs tracking-widest text-theme-softpink uppercase block font-bold">Nota Especial • Felices 22 Años</span>
+                    <h3 class="font-romantic text-3xl md:text-4xl text-rose-200 font-bold">Para alguien increíblemente especial...</h3>
+                </div>
+
+                <div class="space-y-4 font-sans text-sm md:text-base leading-relaxed text-rose-50/95">
+                    <p>
+                        Holiss mi Dieguito, seguro cuando veas esto ya me pase como 4 noches intentando mejorar el codigo jajaja, pero aja lo hice con mucho amor para ti mi amor❤️
+                    </p>
+                    <p>
+                        "En un mundo tan acelerado y lleno de ruido, coincidir contigo se siente como encontrar mi lugar favorito. Siempre estaré aquí para cuidarte, apoyarte y celebrar cada paso que des."
+                    </p>
+                    <p>
+                        Gracias por las risas compartidas, por tu forma tan linda de ser, de amar y por iluminar mis días con cada detalle que me dabas y das aun. Aunque por ahora no estemos juntos, sabes que sos el amor de mi vida y que te amo un monto, que pases un cumpleaños muy lindo junto a todas las personas que amas. ¡Espero que este cumpleaños número 22 sea tan mágico e inolvidable como te mereces! Att. "Tu preciosa<3"
+                    </p>
+                    <p class="font-romantic text-2xl text-right pt-2 text-rose-200 font-bold">
+                        — Con mucho amor ❤️
+                    </p>
+                </div>
+
+                <div class="mt-6 pt-3 border-t border-theme-softpink/20 flex flex-wrap justify-between items-center text-xs text-rose-200/80 gap-2">
+                    <button onclick="triggerHeartsBurst(event); showToast('¡Recuerdo guardado en el corazón! ❤️')" class="bg-gradient-to-r from-theme-rose to-theme-scarlet text-white px-4 py-2 rounded-full font-bold hover:scale-105 transition shadow-lg border border-theme-softpink/40">
+                        <i class="fas fa-bookmark mr-1"></i> Guardar Recuerdo
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECCIÓN 2: MOMENTOS Y DETALLES ==================== -->
+        <section id="sec-memorias" class="tab-content space-y-6">
+            <div class="text-center">
+                <span class="text-theme-softpink text-xs font-semibold tracking-widest uppercase bg-theme-scarlet/30 px-3 py-1 rounded-full border border-theme-rose/30">Capítulo II</span>
+                <h2 class="font-epic text-3xl md:text-4xl font-extrabold text-theme-softpink mt-2">Lo Que Más Me Gusta</h2>
+                <p class="text-gray-300 text-xs md:text-sm">Toca cada tarjeta para voltearla y descubrir lo que significas para mí.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <!-- Card 1 -->
+                <div class="flip-card h-52 cursor-pointer" onclick="this.classList.toggle('flipped'); playSoftTone();">
+                    <div class="flip-card-inner w-full h-full relative rounded-xl shadow-xl">
+                        <div class="flip-card-front absolute inset-0 glass-card rounded-xl p-5 flex flex-col items-center justify-center text-center border border-theme-rose/30">
+                            <div class="w-12 h-12 rounded-full bg-theme-scarlet/30 flex items-center justify-center text-theme-rose text-2xl mb-3">
+                                <i class="fas fa-cloud-sun"></i>
+                            </div>
+                            <h4 class="font-epic text-theme-softpink font-bold text-sm">Tu Calma</h4>
+                            <span class="text-[11px] text-gray-400 mt-2">Toca para voltear</span>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-gradient-to-br from-theme-scarlet to-theme-nightlight rounded-xl p-5 flex flex-col items-center justify-center text-center border border-theme-softpink/40">
+                            <p class="text-xs text-white leading-relaxed italic">
+                                "Hablar contigo se siente como llegar a casa después de un día largo; todo se vuelve más tranquilo y bonito."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="flip-card h-52 cursor-pointer" onclick="this.classList.toggle('flipped'); playSoftTone();">
+                    <div class="flip-card-inner w-full h-full relative rounded-xl shadow-xl">
+                        <div class="flip-card-front absolute inset-0 glass-card rounded-xl p-5 flex flex-col items-center justify-center text-center border border-theme-rose/30">
+                            <div class="w-12 h-12 rounded-full bg-theme-scarlet/30 flex items-center justify-center text-theme-rose text-2xl mb-3">
+                                <i class="fas fa-laugh-sparkles"></i>
+                            </div>
+                            <h4 class="font-epic text-theme-softpink font-bold text-sm">Tu Sonrisa</h4>
+                            <span class="text-[11px] text-gray-400 mt-2">Toca para voltear</span>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-gradient-to-br from-theme-emerald to-theme-night rounded-xl p-5 flex flex-col items-center justify-center text-center border border-theme-softpink/40">
+                            <p class="text-xs text-white leading-relaxed italic">
+                                "Tienes esa risa contagiosa que alegra cualquier día gris. Nunca dejes de sonreír de esa manera."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="flip-card h-52 cursor-pointer" onclick="this.classList.toggle('flipped'); playSoftTone();">
+                    <div class="flip-card-inner w-full h-full relative rounded-xl shadow-xl">
+                        <div class="flip-card-front absolute inset-0 glass-card rounded-xl p-5 flex flex-col items-center justify-center text-center border border-theme-rose/30">
+                            <div class="w-12 h-12 rounded-full bg-theme-scarlet/30 flex items-center justify-center text-theme-rose text-2xl mb-3">
+                                <i class="fas fa-infinity"></i>
+                            </div>
+                            <h4 class="font-epic text-theme-softpink font-bold text-sm">Lo Nuestro</h4>
+                            <span class="text-[11px] text-gray-400 mt-2">Toca para voltear</span>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-gradient-to-br from-theme-scarlet to-theme-emerald rounded-xl p-5 flex flex-col items-center justify-center text-center border border-theme-softpink/40">
+                            <p class="text-xs text-white leading-relaxed italic">
+                                "Sin presiones ni prisas: me encanta la complicidad y el cariño tan genuino que existe entre los dos."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECCIÓN 3: 22 RAZONES PARA CELEBRARTE ==================== -->
+        <section id="sec-razones22" class="tab-content space-y-6">
+            <div class="text-center">
+                <span class="text-theme-softpink text-xs font-semibold tracking-widest uppercase bg-theme-scarlet/30 px-3 py-1 rounded-full border border-theme-rose/30">Capítulo III • 22 Vueltas al Sol</span>
+                <h2 class="font-epic text-3xl md:text-5xl font-extrabold text-theme-softpink mt-2">22 Razones para Celebrarte</h2>
+                <p class="text-gray-300 text-xs md:text-sm max-w-lg mx-auto">Una razón bonita por cada año de tu vida. Toca las tarjetas para lanzar destellos.</p>
+            </div>
+
+            <!-- Grilla interactiva de 22 tarjetas -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5" id="reasonsGrid"></div>
+        </section>
+
+        <!-- ==================== SECCIÓN 4: EL PASTEL DE CUMPLEAÑOS ==================== -->
+        <section id="sec-pastel" class="tab-content space-y-6">
+            <div class="text-center">
+                <span class="text-theme-softpink text-xs font-semibold tracking-widest uppercase bg-theme-scarlet/30 px-3 py-1 rounded-full border border-theme-rose/30">Capítulo IV</span>
+                <h2 class="font-epic text-3xl md:text-4xl font-extrabold text-theme-softpink mt-2">Apaga las Velas y Pide un Deseo</h2>
+                <p class="text-gray-300 text-xs md:text-sm">Toca las 3 velas para apagarlas y descubrir un mensaje muy especial.</p>
+            </div>
+
+            <div class="glass-card p-6 md:p-8 rounded-2xl relative text-center overflow-hidden">
+                <div class="relative flex flex-col items-center justify-center my-6">
+                    <!-- Velas -->
+                    <div class="flex justify-center gap-8 mb-[-8px] z-20">
+                        <div onclick="toggleCandle(1)" class="cursor-pointer flex flex-col items-center group" title="Toca para apagar">
+                            <div id="flame1" class="w-4 h-7 bg-amber-300 rounded-full blur-[1px] animate-pulse border border-yellow-200 shadow-[0_0_15px_#f59e0b]"></div>
+                            <div class="w-3 h-9 bg-gradient-to-b from-theme-softpink to-theme-rose rounded-t-sm"></div>
+                        </div>
+                        <div onclick="toggleCandle(2)" class="cursor-pointer flex flex-col items-center -mt-2 group" title="Toca para apagar">
+                            <div id="flame2" class="w-4 h-8 bg-amber-200 rounded-full blur-[1px] animate-pulse border border-white shadow-[0_0_18px_#f59e0b]"></div>
+                            <div class="w-3.5 h-11 bg-gradient-to-b from-white to-theme-softpink rounded-t-sm"></div>
+                        </div>
+                        <div onclick="toggleCandle(3)" class="cursor-pointer flex flex-col items-center group" title="Toca para apagar">
+                            <div id="flame3" class="w-4 h-7 bg-amber-300 rounded-full blur-[1px] animate-pulse border border-yellow-200 shadow-[0_0_15px_#f59e0b]"></div>
+                            <div class="w-3 h-9 bg-gradient-to-b from-theme-softpink to-theme-rose rounded-t-sm"></div>
+                        </div>
+                    </div>
+
+                    <!-- Pastel Nivel Superior -->
+                    <div class="w-48 md:w-56 h-16 bg-gradient-to-r from-theme-scarlet via-theme-rose to-theme-scarlet rounded-t-xl relative flex items-center justify-center border-t-2 border-theme-softpink/40 shadow-md">
+                        <div class="w-full h-3 bg-white/20 absolute top-0 rounded-t-xl"></div>
+                        <span class="font-romantic text-white text-3xl drop-shadow">Happy Birthday</span>
+                    </div>
+                    <!-- Pastel Nivel Inferior -->
+                    <div class="w-64 md:w-72 h-20 bg-gradient-to-r from-theme-emerald via-theme-nightlight to-theme-emerald rounded-t-2xl relative flex items-center justify-center border-t-2 border-theme-softpink/30 shadow-xl">
+                        <span class="font-epic text-theme-softpink text-xs tracking-widest uppercase">Felices 22 Años</span>
+                    </div>
+                    <!-- Base -->
+                    <div class="w-72 md:w-80 h-4 bg-slate-700/60 rounded-full shadow-2xl"></div>
+                </div>
+
+                <button onclick="relightCandles()" class="text-xs text-theme-softpink hover:text-white bg-theme-night px-4 py-2 rounded-full border border-theme-rose/30 transition shadow">
+                    <i class="fas fa-fire me-1 text-theme-rose"></i> Encender Velas Nuevamente
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- TOAST DE NOTIFICACIÓN SUAVE -->
+    <div id="toastNotification" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-theme-scarlet text-white px-5 py-2.5 rounded-full shadow-2xl border border-theme-softpink/50 text-xs font-semibold opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2">
+        <i class="fas fa-heart text-theme-softpink"></i>
+        <span id="toastText">Mensaje</span>
+    </div>
+
+    <!-- MODAL DE FELICITACIÓN EN PORTUGUÉS AL APAGAR VELAS -->
+    <div id="birthdayModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+        <div class="glass-card max-w-md w-full p-8 rounded-3xl border-2 border-theme-rose text-center relative scarlet-glow space-y-4">
+            <div class="w-16 h-16 mx-auto bg-theme-scarlet/50 rounded-full flex items-center justify-center text-theme-softpink text-3xl animate-bounce">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h3 class="font-romantic text-4xl text-theme-softpink font-bold">¡Parabéns!</h3>
+            <p class="font-epic text-xl text-white font-extrabold tracking-wide leading-snug">
+                "Feliz cumpleaños al <span class="text-theme-softpink border-b border-theme-rose">amor da minha vida</span>" 💖
+            </p>
+            <p class="text-xs text-gray-300 italic leading-relaxed">
+                Que este nuevo año con 22 vueltas al sol esté lleno de magia, sonrisas y momentos hermosos juntos.
+            </p>
+            <button onclick="closeModal()" class="w-full bg-gradient-to-r from-theme-scarlet to-theme-rose text-white py-3 rounded-full font-bold text-xs tracking-wider border border-theme-softpink/40 shadow-lg hover:scale-105 transition">
+                ¡Gracias por Existir! ✨
+            </button>
+        </div>
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT -->
+    <script>
+        // --- DATOS: 22 RAZONES ---
+        const razones22List = [
+            { id: 1, title: "Tu Risa", icon: "fa-laugh-beam", desc: "Esa risa bonita que tiene el poder de alegrarme el día al instante." },
+            { id: 2, title: "Tu Amabilidad", icon: "fa-hand-holding-heart", desc: "La nobleza con la que tratas a los demás y tu corazón tan generoso." },
+            { id: 3, title: "Tu Caballerosidad", icon: "fa-user-tie", desc: "Tus gestos atentos y la manera en que siempre me haces sentir especial." },
+            { id: 4, title: "Tu Calidez", icon: "fa-sun", desc: "Esa sensación reconfortante de hogar cuando estoy cerca de ti." },
+            { id: 5, title: "Tu Forma de Amar", icon: "fa-heart", desc: "La dulzura, entrega y autenticidad con la que demuestras tu cariño." },
+            { id: 6, title: "Tu Mirada", icon: "fa-eye", desc: "La forma en que tus ojos brillan y lo fácil que es perderse en ellos." },
+            { id: 7, title: "Tu Paz en el Caos", icon: "fa-cloud-moon", desc: "Me das calma y serenidad incluso en los días más complicados." },
+            { id: 8, title: "Tus Abrazos", icon: "fa-hands-holding", desc: "Esa forma de abrazarme que reinicia mi mundo por completo." },
+            { id: 9, title: "Tu Sentido del Humor", icon: "fa-grin-squint", desc: "Tus ocurrencias y chistes que siempre me sacan una sonrisa." },
+            { id: 10, title: "Tu Paciencia", icon: "fa-feather", desc: "La serenidad y ternura con la que me escuchas cuando más lo necesito." },
+            { id: 11, title: "Tus Detalles", icon: "fa-gift", desc: "Esas pequeñas cosas que recuerdas y hacen que todo sea único." },
+            { id: 12, title: "Tu Autenticidad", icon: "fa-star", desc: "Eres verdaderamente tú, sin máscaras ni pretensiones." },
+            { id: 13, title: "Tu Pasión", icon: "fa-fire", desc: "La energía y determinación que le pones a las cosas que te importan." },
+            { id: 14, title: "Nuestra Complicidad", icon: "fa-comments", desc: "Esas miradas entre los dos con las que nos entendemos sin hablar." },
+            { id: 15, title: "Tu Voz", icon: "fa-music", desc: "Escucharte hablar siempre calma mis pensamientos y reconforta mi día." },
+            { id: 16, title: "Tu Capacidad de Escuchar", icon: "fa-ear-listen", desc: "Nunca me juzgas y siempre estás presente con atención sincera." },
+            { id: 17, title: "Tus Consejos", icon: "fa-compass", desc: "Tu madurez y perspectiva sabia para ayudarme a ver las cosas claras." },
+            { id: 18, title: "Lo Dulce que Eres", icon: "fa-candy-cane", desc: "Tus gestos tiernos e inesperados que me derriten por dentro." },
+            { id: 19, title: "Tu Apoyo Incondicional", icon: "fa-hands-helping", desc: "Saber que puedo contar contigo en cualquier momento." },
+            { id: 20, title: "Tu Inteligencia", icon: "fa-brain", desc: "La manera tan brillante y astuta con la que ves la vida." },
+            { id: 21, title: "Hacer Cotidiano lo Mágico", icon: "fa-wand-magic-sparkles", desc: "Convertir un momento simple o una charla rápida en algo inolvidable." },
+            { id: 22, title: "Simplemente Ser Tú", icon: "fa-crown", desc: "Por existir y hacer de este mundo un lugar infinitamente más hermoso." }
+        ];
+
+        // Renderizar las 22 razones
+        function render22Reasons() {
+            const grid = document.getElementById('reasonsGrid');
+            if (!grid) return;
+            grid.innerHTML = razones22List.map(r => `
+                <div class="glass-card p-4 rounded-xl border border-theme-rose/20 text-center hover:border-theme-rose/60 transition-all duration-300 hover:-translate-y-1 group cursor-pointer" onclick="revealReason(${r.id}, event)">
+                    <div class="w-8 h-8 mx-auto bg-theme-scarlet/40 rounded-full flex items-center justify-center text-theme-softpink text-xs font-bold mb-2 group-hover:bg-theme-scarlet group-hover:scale-110 transition">
+                        ${r.id}
+                    </div>
+                    <i class="fas ${r.icon} text-theme-rose text-lg mb-1 block"></i>
+                    <h5 class="font-epic text-xs font-bold text-white mb-1">${r.title}</h5>
+                    <p class="text-[11px] text-gray-300 leading-tight">${r.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function revealReason(id, e) {
+            playSoftTone();
+            if (e) createBurst(e.clientX, e.clientY, 18);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            render22Reasons();
+        });
+
+        // --- TOAST NOTIFICACIÓN ---
+        let toastTimeout = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            const text = document.getElementById('toastText');
+            if (!toast || !text) return;
+            text.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-2');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-2');
+            }, 3000);
+        }
+
+        // --- NAVEGACIÓN POR PESTAÑAS (TABS) ---
+        function switchTab(tabId) {
+            playSoftTone();
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-theme-scarlet/60', 'text-theme-softpink');
+                btn.classList.add('text-gray-300');
+            });
+
+            const targetContent = document.getElementById(`sec-${tabId}`);
+            const targetBtn = document.getElementById(`tab-${tabId}`);
+            if (targetContent) targetContent.classList.add('active');
+            if (targetBtn) {
+                targetBtn.classList.add('active', 'bg-theme-scarlet/60', 'text-theme-softpink');
+                targetBtn.classList.remove('text-gray-300');
+            }
+        }
+
+        // --- AUDIO SINTETIZADO DULCE (Web Audio API) ---
+        let audioEnabled = true;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const icon = document.getElementById('audioIcon');
+            const text = document.getElementById('audioText');
+            if (audioEnabled) {
+                icon.className = 'fas fa-music';
+                text.innerText = 'Audio: ON';
+                playSoftTone();
+            } else {
+                icon.className = 'fas fa-volume-mute';
+                text.innerText = 'Audio: OFF';
+            }
+        }
+
+        function playSoftTone() {
+            if (!audioEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.25);
+
+                gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + 0.4);
+            } catch (e) {}
+        }
+
+        function playRomanticMelody() {
+            if (!audioEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const notes = [392, 440, 523.25, 659.25, 783.99, 880];
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.14);
+
+                    gain.gain.setValueAtTime(0, ctx.currentTime + idx * 0.14);
+                    gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + idx * 0.14 + 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.14 + 0.45);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(ctx.currentTime + idx * 0.14);
+                    osc.stop(ctx.currentTime + idx * 0.14 + 0.45);
+                });
+            } catch (e) {}
+        }
+
+        // --- CANVAS DE EFECTOS: PÉTALOS Y DESTELLOS ---
+        const canvas = document.getElementById('fxCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class PetalOrStar {
+            constructor(x, y, isBurst = false) {
+                this.x = x !== undefined ? x : Math.random() * canvas.width;
+                this.y = y !== undefined ? y : (isBurst ? y : -20);
+                this.isBurst = isBurst;
+
+                this.type = Math.random() > 0.4 ? 'petal' : 'sparkle';
+                this.size = Math.random() * (this.type === 'petal' ? 7 : 4) + 3;
+
+                if (isBurst) {
+                    this.vx = (Math.random() - 0.5) * 9;
+                    this.vy = (Math.random() - 0.5) * 9 - 2;
+                } else {
+                    this.vx = (Math.random() - 0.5) * 1.2;
+                    this.vy = Math.random() * 1.4 + 0.7;
+                }
+
+                this.color = this.type === 'petal'
+                    ? ['#e63946', '#9e1b32', '#f4acb7'][Math.floor(Math.random() * 3)]
+                    : ['#ffffff', '#fdf8ec', '#f4acb7'][Math.floor(Math.random() * 3)];
+
+                this.life = 1;
+                this.decay = isBurst ? Math.random() * 0.02 + 0.01 : 0.002;
+                this.rotation = Math.random() * 360;
+                this.rotSpeed = (Math.random() - 0.5) * 4;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.rotation += this.rotSpeed;
+
+                if (this.isBurst) {
+                    this.life -= this.decay;
+                } else {
+                    if (this.y > canvas.height + 20) {
+                        this.y = -10;
+                        this.x = Math.random() * canvas.width;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.life);
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+
+                if (this.type === 'petal') {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, this.size, this.size / 2, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < 35; i++) {
+            particles.push(new PetalOrStar(Math.random() * window.innerWidth, Math.random() * window.innerHeight));
+        }
+
+        function createBurst(x, y, count = 45) {
+            for (let i = 0; i < count; i++) {
+                particles.push(new PetalOrStar(x, y, true));
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].isBurst && particles[i].life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        // --- INTERACCIONES ---
+        function triggerIntroSurprise() {
+            playRomanticMelody();
+            createBurst(window.innerWidth / 2, window.innerHeight / 2, 90);
+
+            const overlay = document.getElementById('introOverlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 700);
+        }
+
+        function triggerHeartsBurst(e) {
+            playRomanticMelody();
+            const x = e ? e.clientX : window.innerWidth / 2;
+            const y = e ? e.clientY : window.innerHeight / 2;
+            createBurst(x, y, 50);
+        }
+
+        function toggleCandle(index) {
+            playSoftTone();
+            const flame = document.getElementById(`flame${index}`);
+            if (flame) {
+                const rect = flame.getBoundingClientRect();
+                createBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 25);
+                flame.classList.add('hidden');
+            }
+
+            const flame1 = document.getElementById('flame1');
+            const flame2 = document.getElementById('flame2');
+            const flame3 = document.getElementById('flame3');
+            if (flame1.classList.contains('hidden') && flame2.classList.contains('hidden') && flame3.classList.contains('hidden')) {
+                setTimeout(() => {
+                    playRomanticMelody();
+                    createBurst(window.innerWidth / 2, window.innerHeight / 2, 85);
+                    document.getElementById('birthdayModal').classList.remove('hidden');
+                }, 400);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('birthdayModal').classList.add('hidden');
+        }
+
+        function relightCandles() {
+            playRomanticMelody();
+            [1, 2, 3].forEach(i => {
+                const flame = document.getElementById(`flame${i}`);
+                if (flame) flame.classList.remove('hidden');
+            });
+            closeModal();
+        }
+    </script>
+</body>
+</html>
